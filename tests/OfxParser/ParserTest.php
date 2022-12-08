@@ -262,4 +262,26 @@ HERE
 
         self::assertTrue(true);
     }
+
+    /**
+     * Testing extended fields in statement
+     */
+    public function testExtendedFieldsExample()
+    {
+        $fullOfxFile = dirname(__DIR__).'/fixtures/ofxdata-full-example.ofx';
+        if (!file_exists($fullOfxFile)) {
+            self::markTestSkipped('Could not find full example data file, cannot fully test Extended Fields Example');
+        }
+
+        $parser = new Parser();
+        $ofx = null;
+
+        try {
+            $ofx = $parser->loadFromFile($fullOfxFile);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+        $this->assertTrue(true);
+    }
 }

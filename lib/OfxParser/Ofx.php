@@ -11,6 +11,7 @@ use OfxParser\Entities\SignOn;
 use OfxParser\Entities\Statement;
 use OfxParser\Entities\Status;
 use OfxParser\Entities\Transaction;
+use OfxParser\Entities\Payee;
 
 /**
  * The OFX object
@@ -249,17 +250,31 @@ class Ofx
         $return = [];
         foreach ($transactions as $t) {
             $transaction = new Transaction();
-            $transaction->type = (string)$t->TRNTYPE;
+            $transaction->type = (string) $t->TRNTYPE;
             $transaction->date = Utils::createDateTimeFromStr($t->DTPOSTED);
-            if ('' !== (string)$t->DTUSER) {
+            if ('' !== (string) $t->DTUSER) {
                 $transaction->userInitiatedDate = Utils::createDateTimeFromStr($t->DTUSER);
             }
             $transaction->amount = Utils::createAmountFromStr($t->TRNAMT);
-            $transaction->uniqueId = (string)$t->FITID;
-            $transaction->name = (string)$t->NAME;
-            $transaction->memo = (string)$t->MEMO;
-            $transaction->sic = $t->SIC;
-            $transaction->checkNumber = $t->CHECKNUM;
+            $transaction->uniqueId = (string) $t->FITID;
+            $transaction->name = (string) $t->NAME;
+            $transaction->memo = (string) $t->MEMO;
+            $transaction->sic = (string) $t->SIC;
+            // CHECKNUM
+            $transaction->checkNumber = (string) $t->CHECKNUM;
+            // REFNUM
+            $transaction->refNumber = (string) $t->REFNUM;
+            // EXTDNAME
+            $transaction->nameExtended = (string) $t->EXTDNAME;
+            // PAYEEID
+            $transaction->payeeId = (string) $t->PAYEEID;
+            // PAYEE
+            if(isset($t->PAYEE)) $transaction->payee = $this->buildPayee($t->PAYEE);
+            // BANKACCTTO
+            if(isset($t->BANKACCTTO)) $transaction->bankAccountTo = $this->buildBankAccountTo($t->BANKACCTTO);
+            // CCACCTTO
+            if(isset($t->CCACCTTO)) $transaction->cardAccountTo = $this->buildCardAccountTo($t->CCACCTTO);
+
             $return[] = $transaction;
         }
 
@@ -278,5 +293,66 @@ class Ofx
         $status->message = $xml->MESSAGE;
 
         return $status;
+    }
+
+    /**
+     * Builds payee of transaction
+     * @param SimpleXMLElement $xml
+     * @return Payee
+     */
+    private function buildPayee(SimpleXMLElement $xml)
+    {
+        $payee = new Payee();
+        // name
+        $payee->name = (string) $xml->NAME;
+        // address
+        $address = [];
+        if((string) $xml->ADDR1) $address[] = (string) $xml->ADDR1;
+        if((string) $xml->ADDR2) $address[] = (string) $xml->ADDR2;
+        if((string) $xml->ADDR3) $address[] = (string) $xml->ADDR3;
+        if(count($address) > 0) $payee->address = $address;
+
+        $payee->city = (string) $xml->CITY;
+        $payee->state = (string) $xml->STATE;
+        $payee->postalCode = (string) $xml->POSTALCODE;
+        $payee->country = (string) $xml->COUNTRY;
+        $payee->phone = (string) $xml->PHONE;
+
+        return $payee;
+    }
+
+    /**
+     * Builds corresponding bank account of transaction
+     * @param SimpleXMLElement $xml
+     * @return BankAccount
+     */
+    public function buildBankAccountTo(SimpleXMLElement $xml)
+    {
+        $bankAccountTo = new BankAccount();
+        $bankAccountTo->routingNumber = (string) $xml->BANKID;
+        $bankAccountTo->agencyNumber = (string) $xml->BRANCHID;
+        $bankAccountTo->accountNumber = (string) $xml->ACCTID;
+        $bankAccountTo->accountType = (string) $xml->ACCTTYPE;
+
+        // remove other attrs
+        unset($bankAccountTo->balance, $bankAccountTo->balanceDate, $bankAccountTo->statement, $bankAccountTo->transactionUid);
+
+        return $bankAccountTo;
+    }
+
+    /**
+     * Builds corresponding credit card account of transaction
+     * @param SimpleXMLElement $xml
+     * @return BankAccount
+     */
+    public function buildCardAccountTo(SimpleXMLElement $xml)
+    {
+        $cardAccountTo = new BankAccount();
+        $cardAccountTo->accountNumber = (string) $xml->ACCTID;
+
+        // remove other attrs
+        unset($cardAccountTo->routingNumber, $cardAccountTo->agencyNumber, $cardAccountTo->accountType, $cardAccountTo->balance, $cardAccountTo->balanceDate, $cardAccountTo->statement, $cardAccountTo->transactionUid);
+
+        return $cardAccountTo;
     }
 }

@@ -1,10 +1,11 @@
 OFX Parser
 =================
 
-[![Build Status](https://travis-ci.org/asgrim/ofxparser.svg?branch=master)](https://travis-ci.org/asgrim/ofxparser) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/asgrim/ofxparser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/asgrim/ofxparser/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/asgrim/ofxparser/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/asgrim/ofxparser/?branch=master) [![Latest Stable Version](https://poser.pugx.org/asgrim/ofxparser/v/stable)](https://packagist.org/packages/asgrim/ofxparser) [![License](https://poser.pugx.org/asgrim/ofxparser/license)](https://packagist.org/packages/asgrim/ofxparser)
+## This is a fork of [asgrim/ofxparser](https://github.com/asgrim/ofxparser) with extended transaction fields.
 
-This is the fork of asgrim/ofxparser customized for my project.
-------------------
+Added support of extended OFX transaction fields: PAYEEID, REFNUM, PAYEE, BANKACCTTO, CCACCTTO.
+
+--------------------
 
 OFX Parser is a PHP library designed to parse an OFX file downloaded from a financial institution into simple PHP objects.
 

@@ -3,7 +3,7 @@ OFX Parser
 
 ## This is a fork of [asgrim/ofxparser](https://github.com/asgrim/ofxparser) with extended transaction fields.
 
-Added support of extended OFX transaction fields: PAYEEID, REFNUM, PAYEE, BANKACCTTO, CCACCTTO.
+Added support of extended OFX transaction fields: PAYEEID, REFNUM, EXTDNAME, PAYEE, BANKACCTTO, CCACCTTO.
 
 --------------------
 

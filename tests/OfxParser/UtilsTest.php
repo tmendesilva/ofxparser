@@ -15,7 +15,7 @@ class MyDateTime extends \DateTime { }
  */
 class UtilsTest extends TestCase
 {
-    public function amountConversionProvider()
+    public static function amountConversionProvider()
     {
         return [
             '1000.00' => ['1000.00', 1000.0],

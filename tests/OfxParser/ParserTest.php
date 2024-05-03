@@ -92,7 +92,7 @@ class ParserTest extends TestCase
     /**
      * @return array
      */
-    public function closeUnclosedXmlTagsProvider()
+    public static function closeUnclosedXmlTagsProvider()
     {
         return [
             ['<SOMETHING>', '<SOMETHING>'],
@@ -121,7 +121,7 @@ class ParserTest extends TestCase
         self::assertEquals($expected, $method->invoke($parser, $input));
     }
 
-    public function convertSgmlToXmlProvider()
+    public static function convertSgmlToXmlProvider()
     {
         return [
             [<<<HERE
@@ -198,7 +198,7 @@ HERE
 
         /** @var Parser|\PHPUnit_Framework_MockObject_MockObject $parser */
         $parser = $this->getMockBuilder(Parser::class)
-                         ->setMethods(['loadFromString'])
+                         ->onlyMethods(['loadFromString'])
                          ->getMock();
         $parser->expects(self::once())->method('loadFromString');
         $parser->loadFromFile($filename);
@@ -207,7 +207,7 @@ HERE
     /**
      * @return array
      */
-    public function loadFromStringProvider()
+    public static function loadFromStringProvider()
     {
         return [
             'ofxdata.ofx' => [dirname(__DIR__).'/fixtures/ofxdata.ofx'],

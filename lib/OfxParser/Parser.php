@@ -50,7 +50,7 @@ class Parser
     public function loadFromString($ofxContent)
     {
         $ofxContent = str_replace(["\r\n", "\r"], "\n", $ofxContent);
-        $ofxContent = utf8_encode($ofxContent);
+        $ofxContent = mb_convert_encoding($ofxContent, "UTF-8");
 
         $sgmlStart = stripos($ofxContent, '<OFX>');
         $ofxHeader =  trim(substr($ofxContent, 0, $sgmlStart));
